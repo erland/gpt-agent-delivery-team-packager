@@ -1,0 +1,7 @@
+# Optional Codex agent fan-out limits.
+# This file is intended as a template for `.codex/config.toml`. Use only safe agent settings by default.
+# Do not configure MCP servers or plugins here unless explicitly requested.
+
+[agents]
+max_threads = 6
+max_depth = 1

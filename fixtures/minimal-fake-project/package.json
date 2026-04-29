@@ -1,0 +1,9 @@
+{
+  "name": "minimal-fake-project",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test": "node src/index.js",
+    "build": "node src/index.js"
+  }
+}
