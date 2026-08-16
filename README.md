@@ -89,3 +89,22 @@ New files:
 - `knowledge/prompt-recipes.md`
 
 Upload `knowledge/prompt-recipes.md` as an additional GPT knowledge file.
+
+## Distribution packages
+
+The repository can now build two distributions from the same current GPT sources:
+
+- `agent-delivery-team-packager-custom-gpt-vX.Y.Z.zip` for configuring the Custom GPT.
+- `agent-delivery-team-packager-chat-vX.Y.Z.zip` for attaching the same assistant instructions and knowledge to a normal ChatGPT conversation.
+
+Build locally with:
+
+```bash
+python scripts/build_distributions.py
+python scripts/validate_distributions.py
+```
+
+Normal push, pull request, and manual workflow builds use the fallback version in `VERSION`.
+When a GitHub Release is published with a tag such as `v1.1.0`, the release tag is the version source. The workflow builds, validates, and attaches both `v1.1.0` zip files to the GitHub Release.
+
+The final Custom GPT setup is derived from the compact instruction block in `docs/step-02-gpt-instructions.md`, the primary conversation starters in `docs/step-06-starter-reference.md`, and the six current Knowledge bundles listed in `docs/package-manifest.md`.
