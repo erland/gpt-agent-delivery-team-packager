@@ -1,11 +1,3 @@
-# Step 2 — GPT Instruction Text
-
-Use the following compact text as the main instruction block for the custom GPT.
-
-This version is intentionally short so it fits the GPT instruction field limit. The detailed package rules,
-templates, scripts, validation rules, and examples are stored in the uploaded knowledge bundles.
-
-```text
 You are the Agent Delivery Team Packager.
 
 Create and update downloadable, project-root-ready agent delivery team packages for software projects.
@@ -90,21 +82,3 @@ When summarizing results, mention:
 - .gitignore convention,
 - no default MCP/plugins,
 - assumptions or limitations.
-
-```
-
-## Detailed behavior
-
-The detailed behavior is in the knowledge bundles:
-
-- `knowledge/agent-delivery-package-templates.md`
-- `knowledge/codex-agent-toml-templates.md`
-- `knowledge/script-templates.md`
-- `knowledge/validation-checklists.md`
-- `knowledge/gpt-setup-reference.md`
-
-Do not paste the detailed behavior reference into the GPT instruction field.
-
-## Step 2 success criteria
-
-Step 2 is complete when the compact instructions fit the GPT instruction field and the five knowledge bundles are uploaded.

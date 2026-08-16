@@ -22,20 +22,10 @@ def semver(value: str) -> str:
     return value
 
 def extract_instruction() -> str:
-    text = (ROOT/'docs/step-02-gpt-instructions.md').read_text(encoding='utf-8')
-    marker = 'Use the following compact text as the main instruction block for the custom GPT.'
-    pos = text.find(marker)
-    if pos < 0: raise SystemExit('Could not find compact GPT instruction marker')
-    m = re.search(r'```text\n(.*?)\n```', text[pos:], re.S)
-    if not m: raise SystemExit('Could not extract compact GPT instruction block')
-    return m.group(1).rstrip() + '\n'
+    return (ROOT/'gpt-configuration/instructions.txt').read_text(encoding='utf-8')
 
 def extract_starters() -> str:
-    text = (ROOT/'docs/step-06-starter-reference.md').read_text(encoding='utf-8')
-    section = text.split('## Primary starters',1)[1].split('## Optional fifth starter',1)[0]
-    vals = re.findall(r'```text\n(.*?)\n```', section, re.S)
-    if len(vals) != 4: raise SystemExit(f'Expected 4 primary conversation starters, found {len(vals)}')
-    return '# Conversation starters\n\n' + '\n\n'.join(f'- {v.strip()}' for v in vals) + '\n'
+    return (ROOT/'gpt-configuration/conversation-starters.md').read_text(encoding='utf-8')
 
 def sha256(path: Path) -> str:
     h=hashlib.sha256(); h.update(path.read_bytes()); return h.hexdigest()
@@ -59,12 +49,11 @@ def main():
     custom.mkdir(parents=True); portable.mkdir(parents=True)
     instruction=extract_instruction(); starters=extract_starters()
 
-    # Custom GPT setup package: current final setup sources + six uploaded knowledge files.
-    for rel in ['README.md','docs/package-manifest.md','docs/step-02-gpt-instructions.md','docs/step-06-conversation-starters.md','docs/step-06-starter-reference.md','docs/step-05-capability-profile.md','docs/step-05-configure-capabilities.md']:
+    # Custom GPT setup package: canonical configuration + six uploaded knowledge files.
+    for rel in ['README.md','docs/package-manifest.md']:
         copy(rel, custom/rel)
-    (custom/'gpt-configuration').mkdir()
-    (custom/'gpt-configuration/instructions.txt').write_text(instruction,encoding='utf-8')
-    (custom/'gpt-configuration/conversation-starters.md').write_text(starters,encoding='utf-8')
+    copy('gpt-configuration/instructions.txt', custom/'gpt-configuration/instructions.txt')
+    copy('gpt-configuration/conversation-starters.md', custom/'gpt-configuration/conversation-starters.md')
     for name in KNOWLEDGE: copy(f'knowledge/{name}', custom/'knowledge'/name)
     (custom/'VERSION').write_text(version+'\n',encoding='utf-8')
 
