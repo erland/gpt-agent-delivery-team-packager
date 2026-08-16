@@ -1,0 +1,10 @@
+# Generated distribution packages
+dist/
+
+# Python bytecode/cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local tooling / OS
+.DS_Store

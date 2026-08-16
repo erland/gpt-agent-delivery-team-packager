@@ -1,0 +1,52 @@
+name: Build GPT distributions
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            tag='${{ github.event.release.tag_name }}'
+            if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([+-][0-9A-Za-z.-]+)?$ ]]; then
+              echo "Release tag must use v<semver>, for example v1.1.0" >&2
+              exit 1
+            fi
+            version="${tag#v}"
+          else
+            version="$(tr -d '[:space:]' < VERSION)"
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Build distributions
+        run: python scripts/build_distributions.py --version '${{ steps.version.outputs.version }}'
+      - name: Validate distributions
+        run: python scripts/validate_distributions.py --version '${{ steps.version.outputs.version }}'
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-delivery-team-packager-v${{ steps.version.outputs.version }}
+          path: dist/*.zip
+          retention-days: 14
+      - name: Attach release assets
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload '${{ github.event.release.tag_name }}' dist/*.zip --clobber
